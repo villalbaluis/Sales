@@ -1,2 +1,5 @@
-# Sales
-Shopping car, created in .Net with Blazor
+Sales
+=====
+
+
+Proyecto de prueba, para desarrollo en .Net, usando MAUI.
