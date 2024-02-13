@@ -1,0 +1,48 @@
+﻿@typeparam Titem
+
+@if(MyList is null)
+{
+    @if (Loading is null)
+    {
+        <div class="align-items-center">
+            <img src="https://cdn.pixabay.com/animation/2022/07/29/03/42/03-42-11-849_512.gif" />
+        </div>
+    }
+    else
+    {
+        @Loading
+    }
+}
+else if(MyList.Count == 0)
+{
+    @if (NoRecords is null)
+    {
+        <div class="align-items-center">
+            <p>No existen registros para mostrar.</p>
+        </div>
+    }
+    else
+    {
+        @NoRecords
+    }
+}
+else
+{
+    @Body
+}
+
+@code {
+    [Parameter]
+    public RenderFragment? Loading { get; set; }
+
+    [Parameter]
+    public RenderFragment? NoRecords { get; set; }
+
+    [Parameter]
+    [EditorRequired]
+    public RenderFragment Body { get; set; } = null!;
+
+    [Parameter]
+    [EditorRequired]
+    public List<Titem> MyList { get; set; } = null!;
+}
