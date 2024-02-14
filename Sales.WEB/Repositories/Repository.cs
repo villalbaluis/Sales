@@ -56,5 +56,36 @@ namespace Sales.WEB.Repositories
             var respuestaString = await httpResponse.Content.ReadAsStringAsync();
             return JsonSerializer.Deserialize<T>(respuestaString, jsonSerializerOptions)!;
         }
+
+        /// Llamado a API para eliminar un elemento
+        public async Task<HttpResponseWrapper<object>> Delete(string url)
+        {
+            var responseHTTP = await _httpClient.DeleteAsync(url); /// Instrucción de eliminar elemento
+            /// Se retorna un objeto de la clase HttpResponseWrapper con los parametros dados.
+            return new HttpResponseWrapper<object>(null, !responseHTTP.IsSuccessStatusCode, responseHTTP);
+        }
+
+        /// API actualizar datos, sin respuesta especifica.
+        public async Task<HttpResponseWrapper<object>> Put<T>(string url, T model)
+        {
+            var mesageJSON = JsonSerializer.Serialize(model);
+            var messageContet = new StringContent(mesageJSON, Encoding.UTF8, "application/json");
+            var responseHttp = await _httpClient.PutAsync(url, messageContet);
+            return new HttpResponseWrapper<object>(null, !responseHttp.IsSuccessStatusCode, responseHttp);
+        }
+
+        /// API, actualizar datos con respuesta validada
+        public async Task<HttpResponseWrapper<TResponse>> Put<T, TResponse>(string url, T model)
+        {
+            var messageJSON = JsonSerializer.Serialize(model);
+            var messageContet = new StringContent(messageJSON, Encoding.UTF8, "application/json");
+            var responseHttp = await _httpClient.PutAsync(url, messageContet);
+            if (responseHttp.IsSuccessStatusCode)
+            {
+                var response = await UnserializeAnswer<TResponse>(responseHttp, _jsonDefaultOptions);
+                return new HttpResponseWrapper<TResponse>(response, false, responseHttp);
+            }
+            return new HttpResponseWrapper<TResponse>(default, !responseHttp.IsSuccessStatusCode, responseHttp);
+        }
     }
 }
